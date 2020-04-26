@@ -6,7 +6,7 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
-SCOPES = [ 'https://www.googleapis.com/auth/gmail.readonly' ]
+SCOPES = [ 'https://mail.google.com/' ]
 
 def main():
     creds = None
@@ -30,7 +30,7 @@ def main():
     c=0
     while True:
         response = service.users().messages().list(userId='me',
-                q='after:2012/1/1 before:2020/1/1',
+                q='after:2012/1/1 before:2016/1/1',
                 maxResults=10000,
                 pageToken=nextPageToken
                 ).execute()
@@ -41,6 +41,11 @@ def main():
             break
     print(json.dumps(ids, indent=4))
     print(len(ids))
+    service.users().messages().batchDelete(
+            userId='me',
+            body={ "ids": ids }
+        ).execute()
+
 
 if __name__ == "__main__":
     main()
